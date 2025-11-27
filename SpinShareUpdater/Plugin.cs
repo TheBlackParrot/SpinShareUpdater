@@ -84,7 +84,7 @@ public partial class Plugin : BaseUnityPlugin
         Error = 3,
     }
 
-    internal static GameObject? _updateButton;
+    internal static GameObject? UpdateButton;
     private static IsUpdated _isUpdated = IsUpdated.Loading;
     private static void SetUpdateStatus(IsUpdated status)
     {
@@ -98,9 +98,9 @@ public partial class Plugin : BaseUnityPlugin
             _ => string.Empty
         };
         
-        if (_updateButton != null)
+        if (UpdateButton != null)
         {
-            _updateButton.transform.Find("IconContainer/Icon").GetComponent<Image>().sprite =
+            UpdateButton.transform.Find("IconContainer/Icon").GetComponent<Image>().sprite =
                 Resources.FindObjectsOfTypeAll<Sprite>().First(x => x.name == spriteName);
         }
 
@@ -116,7 +116,7 @@ public partial class Plugin : BaseUnityPlugin
             LastCheckedResult[GetFileReference(CheckSelectionListPatches.PreviousMetadataHandle)] = _isUpdated;
         }
 
-        _updateButton!.GetComponent<XDNavigableButton>().interactable = _isUpdated is not IsUpdated.Loading;
+        UpdateButton!.GetComponent<XDNavigableButton>().interactable = _isUpdated is not IsUpdated.Loading;
     }
     
     private static async Task FindTheMutePreviewButton()
@@ -148,13 +148,13 @@ public partial class Plugin : BaseUnityPlugin
             await Awaitable.EndOfFrameAsync();
         }
         
-        _updateButton = Instantiate(muteButtonTransform.gameObject, parentTransform);
-        _updateButton.name = "UpdateCheckerButton";
-        _updateButton.transform.localPosition = _updateButton.transform.localPosition with { y = 85f };
+        UpdateButton = Instantiate(muteButtonTransform.gameObject, parentTransform);
+        UpdateButton.name = "UpdateCheckerButton";
+        UpdateButton.transform.localPosition = UpdateButton.transform.localPosition with { y = 85f };
         
-        Destroy(_updateButton.GetComponent<ToggleMusicPreviewButton>());
+        Destroy(UpdateButton.GetComponent<ToggleMusicPreviewButton>());
         
-        XDNavigableButton button = _updateButton.GetComponent<XDNavigableButton>();
+        XDNavigableButton button = UpdateButton.GetComponent<XDNavigableButton>();
         button.onClick.RemoveAllListeners();
         button.onClick.AddListener(async void () =>
         {
@@ -174,21 +174,21 @@ public partial class Plugin : BaseUnityPlugin
     private static async Task OnButtonPress()
     {
         MetadataHandle? metadataHandle = CheckSelectionListPatches.PreviousMetadataHandle;
-        if (metadataHandle == null || _updateButton == null)
+        if (metadataHandle == null || UpdateButton == null)
         {
             return;
         }
         
         string fileReference = GetFileReference(metadataHandle);
-        _updateButton.GetComponent<XDNavigableButton>().interactable = false;
+        UpdateButton.GetComponent<XDNavigableButton>().interactable = false;
         
         switch (_isUpdated)
         {
             case IsUpdated.Error:
             case IsUpdated.UpToDate:
                 CancellationTokenSource tokenSource = new();
-                CheckSelectionListPatches._previousTokenSource?.Cancel();
-                CheckSelectionListPatches._previousTokenSource = tokenSource;
+                CheckSelectionListPatches.PreviousTokenSource?.Cancel();
+                CheckSelectionListPatches.PreviousTokenSource = tokenSource;
             
                 await CheckForMapUpdate(metadataHandle, tokenSource.Token, true);
                 break;
@@ -245,14 +245,14 @@ public partial class Plugin : BaseUnityPlugin
                 break;
         }
         
-        _updateButton.GetComponent<XDNavigableButton>().interactable = true;
+        UpdateButton.GetComponent<XDNavigableButton>().interactable = true;
     }
 
     internal static async Task CheckForMapUpdate(MetadataHandle metadataHandle, CancellationToken token = default, bool forced = false)
     {
         try
         {
-            if (_updateButton == null)
+            if (UpdateButton == null)
             {
                 return;
             }

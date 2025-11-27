@@ -11,7 +11,7 @@ internal class CheckSelectionListPatches
     private static string _lastUniqueName = string.Empty;
     internal static MetadataHandle? PreviousMetadataHandle;
 
-    internal static CancellationTokenSource? _previousTokenSource;
+    internal static CancellationTokenSource? PreviousTokenSource;
     
     [HarmonyPatch(typeof(XDSelectionListMenu), nameof(XDSelectionListMenu.UpdatePreviewHandle))]
     [HarmonyPostfix]
@@ -33,15 +33,15 @@ internal class CheckSelectionListPatches
 
         if (!_lastUniqueName.Contains("spinshare_"))
         {
-            Plugin._updateButton?.SetActive(false);
+            Plugin.UpdateButton?.SetActive(false);
             return;
         }
 
-        Plugin._updateButton?.SetActive(true);
+        Plugin.UpdateButton?.SetActive(true);
         
         CancellationTokenSource tokenSource = new();
-        _previousTokenSource?.Cancel();
-        _previousTokenSource = tokenSource;
+        PreviousTokenSource?.Cancel();
+        PreviousTokenSource = tokenSource;
 
         Task.Run(async () =>
         {
