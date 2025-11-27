@@ -26,6 +26,7 @@ public partial class Plugin : BaseUnityPlugin
     private static string CustomsPath => CustomAssetLoadingHelper.CUSTOM_DATA_PATH;
 
     private static readonly Dictionary<string, DateTime> LastChecked = new();
+    private static readonly Dictionary<string, DateTime> LastCheckedWriteTime = new();
     private static readonly Dictionary<string, IsUpdated> LastCheckedResult = new();
 
     private void Awake()
@@ -270,6 +271,16 @@ public partial class Plugin : BaseUnityPlugin
             }
             
             string fileReference = GetFileReference(metadataHandle);
+            string path = Path.Combine(CustomsPath, $"{fileReference}.srtb");
+
+            if (LastCheckedWriteTime.TryGetValue(fileReference, out DateTime lastCheckedWriteTime))
+            {
+                if (lastCheckedWriteTime != File.GetLastWriteTime(path))
+                {
+                    forced = true; // something external modified it, re-check
+                }
+            }
+            
             if (LastChecked.TryGetValue(fileReference, out DateTime previousCheckTime) && !forced)
             {
                 if (DateTime.Now <= previousCheckTime.AddMinutes(30))
@@ -317,8 +328,9 @@ public partial class Plugin : BaseUnityPlugin
                 return;
             }
             
-            string path = Path.Combine(CustomsPath, $"{fileReference}.srtb");
             SetUpdateStatus(File.GetLastWriteTime(path) >= updateDateTime ? IsUpdated.UpToDate : IsUpdated.OutOfDate);
+            
+            LastCheckedWriteTime[fileReference] = File.GetLastWriteTime(path);
         }
         catch (OperationCanceledException) when (token.IsCancellationRequested)
         {
