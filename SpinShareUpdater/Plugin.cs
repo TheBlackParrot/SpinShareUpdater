@@ -353,10 +353,11 @@ public partial class Plugin : BaseUnityPlugin
         int attempts = 0;
         MetadataHandle metadataHandle;
         
+        await Task.Delay(100);
+        
         keepTrying:
         try
         {
-                
             metadataHandle = XDSelectionListMenu.Instance._sortedTrackList.First(handle =>
             {
                 if (string.IsNullOrEmpty(handle.UniqueName))
@@ -397,5 +398,9 @@ public partial class Plugin : BaseUnityPlugin
         }
         
         XDSelectionListMenu.Instance.ScrollToTrack(metadataHandle);
+        if (XDSelectionListMenu.Instance.CurrentPreviewTrack.Item1 != metadataHandle)
+        {
+            await JumpToMap(fileReference); // try again, track lists haven't updated
+        }
     }
 }
