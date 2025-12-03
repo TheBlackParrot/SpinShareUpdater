@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using BepInEx;
@@ -314,21 +315,20 @@ public partial class Plugin : BaseUnityPlugin
             }
             SongDetail details = content.data;
             
-            // details.uploadDate.stimezone is null (erm), but SpinShare stores time in Europe/Berlin
-            // https://github.com/unicode-org/cldr/blob/59dfe3ad9720e304957658bd991df8b0dba3519a/common/supplemental/windowsZones.xml#L307
-            DateTime updateDateTime;
-            if (details.updateDate != null)
-            {
-                updateDateTime = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(details.updateDate.date, "W. Europe Standard Time", TimeZoneInfo.Local.Id);
-            }
-            else
+            if (details.updateDate == null || details.updateHash == null)
             {
                 // null values seem to indicate no updates were ever done
                 SetUpdateStatus(IsUpdated.UpToDate);
                 return;
             }
             
-            SetUpdateStatus(File.GetLastWriteTime(path) >= updateDateTime ? IsUpdated.UpToDate : IsUpdated.OutOfDate);
+            using MD5 md5 = MD5.Create();
+            using FileStream stream = File.OpenRead(path);
+            
+            SetUpdateStatus(
+                string.Equals(BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", string.Empty), details.updateHash, StringComparison.InvariantCultureIgnoreCase)
+                    ? IsUpdated.UpToDate
+                    : IsUpdated.OutOfDate);
             
             LastCheckedWriteTime[fileReference] = File.GetLastWriteTime(path);
         }
