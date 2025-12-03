@@ -344,6 +344,12 @@ public partial class Plugin : BaseUnityPlugin
 
     private static async Task JumpToMap(string fileReference)
     {
+        XDSelectionListMenu.Instance.ClearSearch();
+        PlayerSettingsData.Instance.FilterCustomTracks.ResetData();
+        PlayerSettingsData.Instance.FilterMaximumDifficulty.ResetData();
+        PlayerSettingsData.Instance.FilterMinimumDifficulty.ResetData();
+        PlayerSettingsData.Instance.ShowOnlyFavouritesArcade.ResetData();
+        
         int attempts = 0;
         MetadataHandle metadataHandle;
         

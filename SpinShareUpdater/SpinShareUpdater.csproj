@@ -53,6 +53,9 @@
             <HintPath>$(BaseGameDir)\SpinRhythm_Data\Managed\Assembly-CSharp.dll</HintPath>
             <Publicize>true</Publicize>
         </Reference>
+        <Reference Include="SSD.Game">
+            <HintPath>$(BaseGameDir)\SpinRhythm_Data\Managed\SSD.Game.dll</HintPath>
+        </Reference>
         <Reference Include="UnityEngine.UI">
             <HintPath>$(BaseGameDir)\SpinRhythm_Data\Managed\UnityEngine.UI.dll</HintPath>
         </Reference>
