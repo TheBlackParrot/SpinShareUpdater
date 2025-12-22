@@ -10,6 +10,7 @@ public partial class Plugin
     private const string TRANSLATION_PREFIX = $"{nameof(SpinShareUpdater)}_";
     
     internal static ConfigEntry<bool> DeleteOldMapFiles = null!;
+    internal static ConfigEntry<bool> HideOldMapFiles = null!;
 
     private void RegisterConfigEntries()
     {
@@ -19,6 +20,10 @@ public partial class Plugin
         DeleteOldMapFiles = Config.Bind("General", "DeleteOldMapFiles", false,
             "Delete old map files when downloading updated maps");
         TranslationHelper.AddTranslation($"{TRANSLATION_PREFIX}DeleteOldMapFiles", "Delete old map files when downloading updated maps");
+        
+        HideOldMapFiles = Config.Bind("General", "HideOldMapFiles", false,
+            "Hide old map files when downloading updated maps and keeping the old map data");
+        TranslationHelper.AddTranslation($"{TRANSLATION_PREFIX}HideOldMapFiles", "Hide old map files");
     }
 
     private static void CreateModPage()
@@ -41,6 +46,16 @@ public partial class Plugin
             $"{TRANSLATION_PREFIX}DeleteOldMapFiles", DeleteOldMapFiles.Value, value =>
             {
                 DeleteOldMapFiles.Value = value;
+            });
+        #endregion
+        
+        #region HideOldMapFiles
+        CustomGroup hideOldMapFilesGroup = UIHelper.CreateGroup(modGroup, "HideOldMapFilesGroup");
+        hideOldMapFilesGroup.LayoutDirection = Axis.Horizontal;
+        UIHelper.CreateSmallToggle(hideOldMapFilesGroup, nameof(HideOldMapFiles),
+            $"{TRANSLATION_PREFIX}HideOldMapFiles", HideOldMapFiles.Value, value =>
+            {
+                HideOldMapFiles.Value = value;
             });
         #endregion
 

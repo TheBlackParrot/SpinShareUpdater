@@ -210,7 +210,7 @@ public partial class Plugin : BaseUnityPlugin
                     else
                     {
                         File.Move(srtbFilename,
-                            Path.Combine(CustomsPath, $"{fileReference}old_{unixTimestamp}.srtb"));
+                            Path.Combine(CustomsPath, $"{fileReference}old_{unixTimestamp}.{(HideOldMapFiles.Value ? "srtb_old" : "srtb")}"));
                     }
                 }
                 if (File.Exists(artFilename))
