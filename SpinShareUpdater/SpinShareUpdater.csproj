@@ -4,7 +4,7 @@
         <TargetFramework>net472</TargetFramework>
         <AssemblyName>SpinShareUpdater</AssemblyName>
         <Product>SpinShareUpdater</Product>
-        <Version>0.0.3</Version>
+        <Version>0.0.4</Version>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <LangVersion>latest</LangVersion>
         <RestoreAdditionalProjectSources>
@@ -52,6 +52,9 @@
         <Reference Include="Assembly-CSharp">
             <HintPath>$(BaseGameDir)\SpinRhythm_Data\Managed\Assembly-CSharp.dll</HintPath>
             <Publicize>true</Publicize>
+        </Reference>
+        <Reference Include="System.Net.Http">
+            <HintPath>$(BaseGameDir)\SpinRhythm_Data\Managed\System.Net.Http.dll</HintPath>
         </Reference>
         <Reference Include="SSD.Game">
             <HintPath>$(BaseGameDir)\SpinRhythm_Data\Managed\SSD.Game.dll</HintPath>

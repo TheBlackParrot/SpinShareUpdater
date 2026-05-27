@@ -33,6 +33,8 @@ public partial class Plugin : BaseUnityPlugin
     private void Awake()
     {
         Log = Logger;
+        
+        SpinShareAPI.client.DefaultRequestHeaders.UserAgent.ParseAdd($"Mozilla/5.0 (compatible; {nameof(SpinShareUpdater)}/{MyPluginInfo.PLUGIN_VERSION})");
 
         RegisterConfigEntries();
         CreateModPage();
